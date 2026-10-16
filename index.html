@@ -202,6 +202,18 @@
     transition: 0.2s;
   }
   /* Фото товара (если задано для цвета) и формы-макеты для разных товаров */
+  .device-visual.has-photo {
+    height: 210px;
+    width: 100%;
+    border-radius: 16px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.12);
+  }
+  .device-visual.has-photo .device-photo {
+    width: 100%; height: 100%; max-height: none;
+    object-fit: contain; filter: none;
+  }
+  .swatch { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35); }
   .device-photo {
     max-width: 100%;
     max-height: 150px;
@@ -865,24 +877,24 @@
     iphone: {
       name: 'iPhone 18 Pro', price: 94990, shape: 'phone',
       colors: [
-        { name: 'Burgundy', hex: ['#5e1f33'], img: null },
-        { name: 'Glacier',  hex: ['#b7cde0'], img: null },
-        { name: 'Silver',   hex: ['#dfe1e5'], img: null },
-        { name: 'Black',    hex: ['#1b1b1e'], img: null }
+        { name: 'Burgundy', hex: ['#5e1f33'], img: 'https://www.apple.com/v/iphone-18-pro/c/images/overview/product-viewer/color_burgundy__f95it7a6dnyq_large.jpg', bg: '#000' },
+        { name: 'Glacier',  hex: ['#b7cde0'], img: 'https://www.apple.com/v/iphone-18-pro/c/images/overview/product-viewer/color_glacier__fkxlpbz0ruy6_large.jpg', bg: '#000' },
+        { name: 'Silver',   hex: ['#dfe1e5'], img: 'https://www.apple.com/v/iphone-18-pro/c/images/overview/product-viewer/color_silver__c0oudn0fzw4m_large.jpg', bg: '#000' },
+        { name: 'Black',    hex: ['#1b1b1e'], img: 'https://www.apple.com/v/iphone-18-pro/c/images/overview/product-viewer/color_black__dseo2tvypuc2_large.jpg', bg: '#000' }
       ]
     },
     dyson: {
       name: 'Dyson Airwrap Complete', price: 46990, shape: 'dyson',
       colors: [
-        { name: 'Prussian Blue / Rich Copper', hex: ['#1f3a5f', '#b87333'], img: null },
-        { name: 'Fuchsia / Bright Nickel',     hex: ['#c2185b', '#c0c4cc'], img: null },
-        { name: 'Bright Nickel / Rich Copper', hex: ['#c0c4cc', '#b87333'], img: null }
+        { name: 'Rich Copper / Bright Nickel', hex: ['#b87333', '#c0c4cc'], img: 'https://dyson-h.assetsadobe2.com/is/image/content/dam/dyson/images/products/primary/395957-01.png?wid=700&fmt=png-alpha', bg: '#eef0f3' },
+        { name: 'Fuchsia / Bright Nickel',     hex: ['#c2185b', '#c0c4cc'], img: 'https://dyson-h.assetsadobe2.com/is/image/content/dam/dyson/images/products/primary/395802-01.png?wid=700&fmt=png-alpha', bg: '#eef0f3' },
+        { name: 'Bright Nickel / Rich Copper', hex: ['#c0c4cc', '#b87333'], img: 'https://dyson-h.assetsadobe2.com/is/image/content/dam/dyson/images/products/primary/400720-01.png?wid=700&fmt=png-alpha', bg: '#eef0f3' }
       ]
     },
     ps5: {
       name: 'PlayStation 5 Slim', price: 49990, shape: 'ps5',
       colors: [
-        { name: 'White', hex: ['#f3f4f6'], img: null }
+        { name: 'White', hex: ['#f3f4f6'], img: 'https://gmedia.playstation.com/is/image/SIEPDC/ps5-overview-evergreen-hero-desktop-video-thumb-01-en-16oct25?wid=1200&fmt=jpg', bg: '#0a1f8f', fit: 'cover' }
       ]
     }
   };
@@ -923,13 +935,18 @@
 
     const mock = document.getElementById('deviceMockup');
     const img = document.getElementById('deviceImg');
+    const stage = document.getElementById('deviceStage');
     mock.className = 'device-mockup shape-' + p.shape;
     mock.style.background = paint(p.shape, c.hex);
     document.getElementById('deviceNameLabel').innerHTML = p.name + '<br>' + p.price.toLocaleString('ru-RU') + ' ₽';
     document.getElementById('stockModelName').innerText = p.name + ' (' + c.name + ')';
 
     if (c.img) {
-      img.onerror = () => { img.hidden = true; mock.style.display = ''; };
+      img.onerror = () => { img.hidden = true; mock.style.display = ''; stage.classList.remove('has-photo'); stage.style.background = ''; };
+      stage.classList.add('has-photo');
+      stage.style.background = c.bg || '';
+      img.style.objectFit = c.fit || 'contain';
+      img.onload = () => {};
       img.src = c.img;
       img.alt = p.name + ', ' + c.name;
       img.hidden = false;
@@ -937,6 +954,8 @@
     } else {
       img.hidden = true;
       mock.style.display = '';
+      stage.classList.remove('has-photo');
+      stage.style.background = '';
     }
 
     const box = document.getElementById('colorSwatches');
