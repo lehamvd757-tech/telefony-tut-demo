@@ -193,11 +193,36 @@
   .swatch {
     width: 28px;
     height: 28px;
+    padding: 0;
+    -webkit-appearance: none;
+    appearance: none;
     border-radius: 8px;
     border: 2px solid transparent;
     cursor: pointer;
     transition: 0.2s;
   }
+  /* Фото товара (если задано для цвета) и формы-макеты для разных товаров */
+  .device-photo {
+    max-width: 100%;
+    max-height: 150px;
+    object-fit: contain;
+    filter: drop-shadow(0 12px 24px rgba(255, 107, 0, 0.35));
+  }
+  .device-mockup.shape-ps5 {
+    width: 78px;
+    border-radius: 14px;
+    border-color: #e2e8f0;
+    justify-content: flex-end;
+  }
+  .device-mockup.shape-dyson {
+    width: 66px;
+    border-radius: 30px;
+    justify-content: flex-end;
+  }
+  .device-mockup.shape-ps5 .dynamic-island,
+  .device-mockup.shape-dyson .dynamic-island { display: none; }
+  .device-mockup.shape-ps5 .device-label,
+  .device-mockup.shape-dyson .device-label { font-size: 9px; }
   .swatch.active {
     border-color: var(--neon-orange);
     transform: scale(1.12);
@@ -562,7 +587,7 @@
   <div class="topbar">
     <div class="brand-logo">ТЕЛЕФОНЫ.ТУТ</div>
     <div class="live-badge">
-      <span class="pulse-dot"></span> LIVE • ЖУРАВЛЕВА 40
+      <span class="pulse-dot"></span> LIVE
     </div>
   </div>
   <div style="padding:8px 14px; background:#2a1b05; color:#ffd166; border-bottom:1px solid #6b4300; font-size:11px; line-height:1.35; text-align:center;">
@@ -574,30 +599,27 @@
     <span class="screen-tag">Экран 1 из 4 • Притяжение (Pull)</span>
     <div class="hero-stage">
       <div class="category-tabs">
-        <button class="cat-btn active" onclick="selectProduct('iphone', 'iPhone 16 Pro 128GB', 94990, this)">📱 iPhone 16 Pro</button>
-        <button class="cat-btn" onclick="selectProduct('dyson', 'Dyson Airwrap Complete', 46990, this)">💇‍♀️ Dyson</button>
-        <button class="cat-btn" onclick="selectProduct('ps5', 'PlayStation 5 Slim', 49990, this)">🎮 PS5 Slim</button>
+        <button class="cat-btn active" onclick="selectProduct('iphone', this)">📱 iPhone 18 Pro</button>
+        <button class="cat-btn" onclick="selectProduct('dyson', this)">💇‍♀️ Dyson</button>
+        <button class="cat-btn" onclick="selectProduct('ps5', this)">🎮 PS5 Slim</button>
       </div>
 
       <div class="device-visual" onclick="rotateMockup()" id="deviceStage">
-        <div class="device-mockup" id="deviceMockup">
+        <img id="deviceImg" class="device-photo" alt="" hidden>
+        <div class="device-mockup shape-phone" id="deviceMockup">
           <div class="dynamic-island"></div>
-          <div class="device-label" id="deviceNameLabel">iPhone 16 Pro<br>94 990 ₽</div>
+          <div class="device-label" id="deviceNameLabel"></div>
         </div>
       </div>
 
-      <div class="color-swatches">
-        <div class="swatch active" style="background: linear-gradient(135deg, #c29b77, #3d3126);" onclick="changeColor('#c29b77', 'Desert Titanium', this)"></div>
-        <div class="swatch" style="background: linear-gradient(135deg, #635bff, #1f1b4d);" onclick="changeColor('#635bff', 'Deep Purple / Ultramarine', this)"></div>
-        <div class="swatch" style="background: linear-gradient(135deg, #2b2d33, #090a0c);" onclick="changeColor('#2b2d33', 'Black Titanium', this)"></div>
-      </div>
+      <div class="color-swatches" id="colorSwatches"></div>
       <div class="swipe-hint">👆 НАЖМИ НА ГАДЖЕТ ИЛИ ЦВЕТ ДЛЯ 3D-СМЕНЫ</div>
     </div>
 
     <!-- FOMO Ticker -->
     <div class="ticker-wrap">
       <div class="ticker-move">
-        🔥 TRADE-IN: ОБМЕНЯЙ СТАРЫЙ НА НОВЫЙ ЗА 5 МИНУТ &nbsp;•&nbsp; 🎮 PS5 SLIM В НАЛИЧИИ &nbsp;•&nbsp; 💨 DYSON ОТ 39.990₽ &nbsp;•&nbsp; 🛡️ УСЛОВИЯ ГАРАНТИИ УТОЧНЯЮТСЯ &nbsp;•&nbsp; 🔥 TRADE-IN: ОБМЕНЯЙ СТАРЫЙ НА НОВЫЙ ЗА 5 МИНУТ
+        🔥 TRADE-IN: ОБМЕНЯЙ СТАРЫЙ НА НОВЫЙ ЗА 5 МИНУТ &nbsp;•&nbsp; 🎮 PS5 SLIM В НАЛИЧИИ &nbsp;•&nbsp; 💨 DYSON ОТ 46.990₽ &nbsp;•&nbsp; 🛡️ УСЛОВИЯ ГАРАНТИИ УТОЧНЯЮТСЯ &nbsp;•&nbsp; 🔥 TRADE-IN: ОБМЕНЯЙ СТАРЫЙ НА НОВЫЙ ЗА 5 МИНУТ
       </div>
     </div>
 
@@ -627,7 +649,7 @@
         <div class="stock-timer" id="countdown1">00 : 14 : 48</div>
       </div>
       <div class="row-between sub-text" style="margin-top:8px;">
-        <span id="stockModelName">iPhone 16 Pro (Desert)</span>
+        <span id="stockModelName">iPhone 18 Pro (Burgundy)</span>
         <span style="color:var(--neon-orange); font-weight:700;">Осталось: 3 шт.</span>
       </div>
       <div class="progress-bar"><div class="progress-fill"></div></div>
@@ -698,7 +720,7 @@
         <span class="sub-text">Из @telefony_tut</span>
       </div>
       <div class="stories-row">
-        <div class="story-circle" onclick="playStory('Алексей: «Сдал свой 13 Pro по Трейд-ин на Журавлева 40, за 10 минут перенесли все банки на 16 Pro!»')">
+        <div class="story-circle" onclick="playStory('Алексей: «Сдал свой 13 Pro по Трейд-ин на Журавлева 40, за 10 минут перенесли все банки на 18 Pro!»')">
           <div class="story-avatar"><span>▶ А</span></div>
           <div class="sub-text" style="font-size:11px;">Алексей</div>
         </div>
@@ -802,7 +824,7 @@
         Забери закрытый <strong>ОПТОВЫЙ ПРАЙС</strong> в Telegram + заморозь <strong>СКИДКУ 2 000 ₽</strong> на комбо-набор
       </div>
       <button class="btn-orange" style="width:100%; background:linear-gradient(90deg, #ff6b00, #9d4edd);" onclick="openLeadModal('price_bot')">
-        📥 СКАЧАТЬ ПРАЙС + СКИДКА 2 000 ₽ ≫
+        📥 СКАЧАТЬ ПРАЙС + СКИДКА 2 000 ₽
       </button>
     </div>
   </section>
@@ -815,7 +837,7 @@
       <span class="savings-tag" id="finalMarginHint">Подарок закреплен ✓</span>
     </div>
     <button class="btn-orange" style="padding:13px 18px; font-size:14px;" onclick="openLeadModal('order')">
-      🔥 ЗАБРАТЬ СЕГОДНЯ ≫
+      🔥 ЗАБРАТЬ СЕГОДНЯ
     </button>
   </div>
 </div>
@@ -836,10 +858,42 @@
 </div>
 
 <script>
+  // Каталог. Цвета iPhone 18 Pro — официальная линейка (Black, Silver, Glacier, Burgundy);
+  // Dyson Airwrap Complete — расцветки с сайта Dyson; корпус PS5 Slim выпускается только белым.
+  // Чтобы показать фото вместо макета, укажите img для нужного цвета, напр. 'img/iphone-18-pro-burgundy.webp'.
+  const PRODUCTS = {
+    iphone: {
+      name: 'iPhone 18 Pro', price: 94990, shape: 'phone',
+      colors: [
+        { name: 'Burgundy', hex: ['#5e1f33'], img: null },
+        { name: 'Glacier',  hex: ['#b7cde0'], img: null },
+        { name: 'Silver',   hex: ['#dfe1e5'], img: null },
+        { name: 'Black',    hex: ['#1b1b1e'], img: null }
+      ]
+    },
+    dyson: {
+      name: 'Dyson Airwrap Complete', price: 46990, shape: 'dyson',
+      colors: [
+        { name: 'Prussian Blue / Rich Copper', hex: ['#1f3a5f', '#b87333'], img: null },
+        { name: 'Fuchsia / Bright Nickel',     hex: ['#c2185b', '#c0c4cc'], img: null },
+        { name: 'Bright Nickel / Rich Copper', hex: ['#c0c4cc', '#b87333'], img: null }
+      ]
+    },
+    ps5: {
+      name: 'PlayStation 5 Slim', price: 49990, shape: 'ps5',
+      colors: [
+        { name: 'White', hex: ['#f3f4f6'], img: null }
+      ]
+    }
+  };
+
   let state = {
-    productName: 'iPhone 16 Pro 128GB',
-    basePrice: 94990,
-    color: 'Desert Titanium',
+    productKey: 'iphone',
+    colorIdx: 0,
+    productName: PRODUCTS.iphone.name,
+    basePrice: PRODUCTS.iphone.price,
+    color: PRODUCTS.iphone.colors[0].name,
+    lastMode: 'order',
     tradeIn: 35000,
     gift: 'Беспроводная зарядка 15W',
     delivery: 'Самовывоз (ул. Журавлева 40/167)',
@@ -848,24 +902,73 @@
     rotation: 0
   };
 
-  function selectProduct(type, name, price, btn) {
+  function paint(shape, hex) {
+    const a = hex[0], b = hex[1] || hex[0];
+    if (shape === 'ps5') return `linear-gradient(90deg, ${a} 0 26%, #0a0b10 26% 74%, ${a} 74% 100%)`;
+    if (shape === 'dyson') return `linear-gradient(180deg, ${a} 0 52%, ${b} 52% 100%)`;
+    return `linear-gradient(135deg, color-mix(in srgb, ${a} 70%, white) 0%, ${a} 50%, color-mix(in srgb, ${a} 65%, black) 100%)`;
+  }
+
+  function swatchBg(hex) {
+    return hex.length > 1 ? `linear-gradient(135deg, ${hex[0]} 50%, ${hex[1]} 50%)` : hex[0];
+  }
+
+  // Перерисовывает витрину под выбранные товар и цвет
+  function renderProduct() {
+    const p = PRODUCTS[state.productKey];
+    const c = p.colors[state.colorIdx];
+    state.productName = p.name;
+    state.basePrice = p.price;
+    state.color = c.name;
+
+    const mock = document.getElementById('deviceMockup');
+    const img = document.getElementById('deviceImg');
+    mock.className = 'device-mockup shape-' + p.shape;
+    mock.style.background = paint(p.shape, c.hex);
+    document.getElementById('deviceNameLabel').innerHTML = p.name + '<br>' + p.price.toLocaleString('ru-RU') + ' ₽';
+    document.getElementById('stockModelName').innerText = p.name + ' (' + c.name + ')';
+
+    if (c.img) {
+      img.onerror = () => { img.hidden = true; mock.style.display = ''; };
+      img.src = c.img;
+      img.alt = p.name + ', ' + c.name;
+      img.hidden = false;
+      mock.style.display = 'none';
+    } else {
+      img.hidden = true;
+      mock.style.display = '';
+    }
+
+    const box = document.getElementById('colorSwatches');
+    box.innerHTML = '';
+    p.colors.forEach((col, i) => {
+      const b = document.createElement('button');
+      b.type = 'button';
+      b.className = 'swatch' + (i === state.colorIdx ? ' active' : '');
+      b.style.background = swatchBg(col.hex);
+      b.title = col.name;
+      b.setAttribute('aria-label', col.name);
+      b.onclick = () => changeColor(i);
+      box.appendChild(b);
+    });
+
+    // Скидка trade-in не может превышать цену товара
+    document.getElementById('tradeSlider').max = Math.min(65000, Math.floor(p.price / 5000) * 5000);
+  }
+
+  function selectProduct(key, btn) {
     document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
     btn.classList.add('active');
-    state.productName = name;
-    state.basePrice = price;
-    document.getElementById('deviceNameLabel').innerHTML = name + '<br>' + price.toLocaleString('ru-RU') + ' ₽';
-    document.getElementById('stockModelName').innerText = name + ' (' + state.color + ')';
+    state.productKey = key;
+    state.colorIdx = 0;
+    renderProduct();
     rotateMockup();
     updateCalculations();
   }
 
-  function changeColor(hex, colorName, el) {
-    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
-    el.classList.add('active');
-    state.color = colorName;
-    const mockup = document.getElementById('deviceMockup');
-    mockup.style.background = `linear-gradient(135deg, ${hex} 0%, #141722 90%)`;
-    document.getElementById('stockModelName').innerText = state.productName + ' (' + colorName + ')';
+  function changeColor(i) {
+    state.colorIdx = i;
+    renderProduct();
     rotateMockup();
   }
 
@@ -916,7 +1019,7 @@
   }
 
   function updateCalculations() {
-    const tradeVal = parseInt(document.getElementById('tradeSlider').value) || 0;
+    const tradeVal = Math.min(parseInt(document.getElementById('tradeSlider').value) || 0, state.basePrice);
     state.tradeIn = tradeVal;
     document.getElementById('tradeDiscountVal').innerText = '-' + tradeVal.toLocaleString('ru-RU') + ' ₽';
     document.getElementById('tradeInModelText').innerText = tradeVal > 0
@@ -928,7 +1031,7 @@
     if (document.getElementById('upsellCase').checked) upsellTotal += 1990;
     if (document.getElementById('upsellCharger').checked) upsellTotal += 2990;
 
-    const finalSum = Math.max(14990, state.basePrice - tradeVal + upsellTotal);
+    const finalSum = Math.max(0, state.basePrice - tradeVal + upsellTotal);
     const perMonth12 = Math.round(finalSum / 12);
     const perMonthSelected = Math.round(finalSum / state.months);
 
@@ -945,6 +1048,7 @@
     const summary = document.getElementById('orderSummaryText');
     const title = document.getElementById('modalTitle');
     const desc = document.getElementById('modalDesc');
+    state.lastMode = mode;
 
     let upsells = [];
     if (document.getElementById('upsellGlass').checked) upsells.push('Бронестекло (1 490₽)');
@@ -965,7 +1069,7 @@
       <strong>Комбо-набор:</strong> ${upsells.length ? upsells.join(', ') : 'Без доп. аксессуаров'}<br>
       <strong>Подарок (0 ₽):</strong> ${state.gift}<br>
       <strong>Получение:</strong> ${state.delivery}<br>
-      <strong>Оплата:</strong> ${state.payment} (${state.months} мес.)<br>
+      <strong>Оплата:</strong> ${paymentLabel()}<br>
       <hr style="border-color:#262b3d; margin:8px 0;">
       <strong style="color:#00e676; font-size:14px;">ИТОГО К ОПЛАТЕ: ${document.getElementById('finalTotalDisplay').innerText}</strong>
     `;
@@ -976,8 +1080,41 @@
     document.getElementById('leadModal').style.display = 'none';
   }
 
+  // Срок рассрочки указываем только если выбрана рассрочка
+  function paymentLabel() {
+    return state.payment.indexOf('Рассрочка') !== -1
+      ? `${state.payment} (${state.months} мес.)`
+      : state.payment;
+  }
+
+  function buildOrderText(mode) {
+    const upsells = [];
+    if (document.getElementById('upsellGlass').checked) upsells.push('Бронестекло (1 490₽)');
+    if (document.getElementById('upsellCase').checked) upsells.push('MagSafe чехол (1 990₽)');
+    if (document.getElementById('upsellCharger').checked) upsells.push('Блок 20W + Перенос (2 990₽)');
+    const lines = [
+      mode === 'price_bot' ? 'Хочу оптовый прайс и купон 2 000 ₽. Мой расчёт:' : 'Заявка на бронь (демо-прототип):',
+      `Товар: ${state.productName} (${state.color})`,
+      `Зачет Trade-In: -${state.tradeIn.toLocaleString('ru-RU')} ₽`,
+      `Комбо-набор: ${upsells.length ? upsells.join(', ') : 'без доп. аксессуаров'}`,
+      `Подарок: ${state.gift}`,
+      `Получение: ${state.delivery}`,
+      `Оплата: ${paymentLabel()}`,
+      `Итого: ${document.getElementById('finalTotalDisplay').innerText}`
+    ];
+    return lines.join('\n');
+  }
+
   function redirectToTelegram() {
-    window.open('https://t.me/telefony_tut', '_blank');
+    const text = buildOrderText(state.lastMode);
+    const note = document.getElementById('modalDesc');
+    // Текст заявки копируем в буфер: Telegram подставляет ?text= только в личный чат/бот, не в канал
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(text).then(() => {
+        note.innerText = 'Текст заявки скопирован. Если поле сообщения в Telegram пустое — вставьте его.';
+      }, () => {});
+    }
+    window.open('https://t.me/telefony_tut?text=' + encodeURIComponent(text), '_blank');
   }
 
   // Таймер обратного отсчета
@@ -989,6 +1126,7 @@
     document.getElementById('countdown1').innerText = `00 : ${m} : ${s}`;
   }, 1000);
 
+  renderProduct();
   updateCalculations();
 </script>
 </body>
