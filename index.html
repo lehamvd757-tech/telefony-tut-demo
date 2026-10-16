@@ -894,7 +894,7 @@
     ps5: {
       name: 'PlayStation 5 Slim', price: 49990, shape: 'ps5',
       colors: [
-        { name: 'White', hex: ['#f3f4f6'], img: 'https://gmedia.playstation.com/is/image/SIEPDC/ps5-overview-evergreen-hero-desktop-video-thumb-01-en-16oct25?wid=1200&fmt=jpg', bg: '#0a1f8f', fit: 'cover' }
+        { name: 'White', hex: ['#f3f4f6'], img: 'https://gmedia.playstation.com/is/image/SIEPDC/ps5-overview-evergreen-hero-desktop-video-thumb-01-en-16oct25?wid=1200&fmt=jpg', bg: '#0b2a9c' }
       ]
     }
   };
@@ -946,7 +946,8 @@
       stage.classList.add('has-photo');
       stage.style.background = c.bg || '';
       img.style.objectFit = c.fit || 'contain';
-      img.onload = () => {};
+      img.style.visibility = 'hidden';
+      img.onload = () => { img.style.visibility = ''; };
       img.src = c.img;
       img.alt = p.name + ', ' + c.name;
       img.hidden = false;
