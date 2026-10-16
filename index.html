@@ -1,0 +1,995 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<link rel="icon" href="data:,">
+<title>ТЕЛЕФОНЫ.ТУТ — Интерактивный прототип (MVP)</title>
+<style>
+  :root {
+    --bg-dark: #0a0b10;
+    --card-bg: #141722;
+    --card-border: #252a3d;
+    --neon-orange: #ff6b00;
+    --neon-purple: #9d4edd;
+    --neon-green: #00e676;
+    --text-main: #f8fafc;
+    --text-muted: #94a3b8;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; }
+  body {
+    background: #050508;
+    color: var(--text-main);
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    display: flex;
+    justify-content: center;
+    min-height: 100vh;
+  }
+  /* Эмуляция 6.1" смартфона на десктопе и полноэкранный режим на мобильном */
+  .phone-viewport {
+    width: 100%;
+    max-width: 412px;
+    background: var(--bg-dark);
+    background-image:
+      radial-gradient(circle at 10% 15%, rgba(157, 78, 221, 0.14) 0%, transparent 35%),
+      radial-gradient(circle at 90% 45%, rgba(255, 107, 0, 0.12) 0%, transparent 40%),
+      linear-gradient(rgba(255,255,255,0.02) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(255,255,255,0.02) 1px, transparent 1px);
+    background-size: 100% 100%, 100% 100%, 24px 24px, 24px 24px;
+    position: relative;
+    padding-bottom: 96px;
+    box-shadow: 0 0 50px rgba(0,0,0,0.9);
+    border-left: 1px solid #1e2230;
+    border-right: 1px solid #1e2230;
+    overflow-x: hidden;
+  }
+
+  /* Верхний бар */
+  .topbar {
+    position: sticky;
+    top: 0;
+    z-index: 50;
+    backdrop-filter: blur(12px);
+    background: rgba(10, 11, 16, 0.85);
+    border-bottom: 1px solid var(--card-border);
+    padding: 12px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .brand-logo {
+    font-weight: 900;
+    font-size: 19px;
+    letter-spacing: 0.5px;
+    background: linear-gradient(90deg, #ff6b00, #ffaa00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    text-shadow: 0 0 18px rgba(255, 107, 0, 0.35);
+  }
+  .live-badge {
+    font-size: 11px;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 99px;
+    border: 1px solid var(--neon-orange);
+    color: #fff;
+    background: rgba(255, 107, 0, 0.15);
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .pulse-dot {
+    width: 7px;
+    height: 7px;
+    background: var(--neon-green);
+    border-radius: 50%;
+    box-shadow: 0 0 8px var(--neon-green);
+    animation: pulse 1.4s infinite;
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); opacity: 1; }
+    50% { transform: scale(1.35); opacity: 0.5; }
+  }
+
+  .screen-section {
+    padding: 18px 16px 24px;
+    border-bottom: 2px dashed rgba(255,255,255,0.07);
+  }
+  .screen-tag {
+    font-size: 11px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: var(--neon-purple);
+    font-weight: 800;
+    margin-bottom: 6px;
+    display: block;
+  }
+  .section-title {
+    font-size: 20px;
+    font-weight: 800;
+    margin-bottom: 14px;
+    line-height: 1.25;
+  }
+
+  /* Экран 1: 3D Витрина */
+  .hero-stage {
+    background: radial-gradient(circle at center, rgba(255,107,0,0.18) 0%, rgba(20,23,34,0.9) 70%);
+    border: 1px solid var(--card-border);
+    border-radius: 18px;
+    padding: 18px 14px;
+    text-align: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .category-tabs {
+    display: flex;
+    gap: 6px;
+    justify-content: center;
+    margin-bottom: 14px;
+  }
+  .cat-btn {
+    background: rgba(255,255,255,0.05);
+    border: 1px solid var(--card-border);
+    color: var(--text-muted);
+    padding: 6px 12px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .cat-btn.active {
+    background: rgba(255, 107, 0, 0.2);
+    border-color: var(--neon-orange);
+    color: #fff;
+    box-shadow: 0 0 12px rgba(255, 107, 0, 0.35);
+  }
+  .device-visual {
+    height: 170px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    cursor: pointer;
+    user-select: none;
+  }
+  .device-mockup {
+    width: 96px;
+    height: 148px;
+    border-radius: 20px;
+    border: 3px solid #cbd5e1;
+    background: linear-gradient(135deg, #2b231d 0%, #c29b77 50%, #1a1612 100%);
+    box-shadow: 0 12px 30px rgba(255, 107, 0, 0.35), inset 0 0 15px rgba(255,255,255,0.25);
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    padding: 8px;
+    transition: all 0.35s ease;
+  }
+  .dynamic-island {
+    width: 32px;
+    height: 8px;
+    background: #000;
+    border-radius: 99px;
+    margin: 0 auto;
+  }
+  .device-label {
+    font-size: 10px;
+    font-weight: 800;
+    color: rgba(255,255,255,0.9);
+    text-align: center;
+    background: rgba(0,0,0,0.55);
+    border-radius: 6px;
+    padding: 3px;
+  }
+  .color-swatches {
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .swatch {
+    width: 28px;
+    height: 28px;
+    border-radius: 8px;
+    border: 2px solid transparent;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .swatch.active {
+    border-color: var(--neon-orange);
+    transform: scale(1.12);
+    box-shadow: 0 0 10px rgba(255, 107, 0, 0.6);
+  }
+  .swipe-hint {
+    font-size: 10px;
+    color: var(--text-muted);
+    margin-top: 8px;
+    letter-spacing: 0.6px;
+  }
+
+  /* Бегущая строка FOMO */
+  .ticker-wrap {
+    margin: 14px -16px;
+    background: rgba(0, 230, 118, 0.1);
+    border-top: 1px solid var(--neon-green);
+    border-bottom: 1px solid var(--neon-green);
+    padding: 7px 0;
+    overflow: hidden;
+    white-space: nowrap;
+  }
+  .ticker-move {
+    display: inline-block;
+    animation: ticker 16s linear infinite;
+    font-size: 12px;
+    font-weight: 700;
+    color: #e2f1ff;
+  }
+  @keyframes ticker {
+    0% { transform: translateX(0); }
+    100% { transform: translateX(-50%); }
+  }
+
+  /* Карточки виджетов */
+  .widget-card {
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 14px;
+    padding: 14px;
+    margin-bottom: 12px;
+  }
+  .row-between {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  .price-highlight {
+    color: var(--neon-green);
+    font-weight: 800;
+    font-size: 18px;
+  }
+  .sub-text {
+    font-size: 12px;
+    color: var(--text-muted);
+  }
+
+  /* Ползунки */
+  input[type=range] {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 6px;
+    background: #2b3044;
+    border-radius: 5px;
+    outline: none;
+    margin: 12px 0 8px;
+  }
+  input[type=range]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: var(--neon-orange);
+    box-shadow: 0 0 12px var(--neon-orange);
+    cursor: pointer;
+    border: 2px solid #fff;
+  }
+
+  /* Счетчик стока */
+  .stock-timer {
+    font-family: monospace;
+    font-size: 16px;
+    font-weight: 800;
+    background: #0d0f17;
+    padding: 4px 8px;
+    border-radius: 6px;
+    border: 1px solid #2e354b;
+    color: #ff9e00;
+  }
+  .progress-bar {
+    height: 5px;
+    background: #262b3d;
+    border-radius: 4px;
+    overflow: hidden;
+    margin-top: 6px;
+  }
+  .progress-fill {
+    height: 100%;
+    width: 68%;
+    background: linear-gradient(90deg, #ff3d00, #ffea00);
+  }
+
+  /* Кнопки CTA */
+  .cta-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px;
+    margin-top: 12px;
+  }
+  .btn-orange {
+    background: linear-gradient(135deg, #ff5500, #ff8800);
+    color: #fff;
+    border: none;
+    border-radius: 12px;
+    padding: 13px 10px;
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    box-shadow: 0 4px 20px rgba(255, 107, 0, 0.4);
+    text-align: center;
+  }
+  .btn-purple {
+    background: rgba(157, 78, 221, 0.15);
+    color: #fff;
+    border: 1.5px solid var(--neon-purple);
+    border-radius: 12px;
+    padding: 13px 10px;
+    font-weight: 800;
+    font-size: 13px;
+    cursor: pointer;
+    box-shadow: 0 4px 18px rgba(157, 78, 221, 0.25);
+    text-align: center;
+  }
+
+  /* Экран 2: IMEI + Комбо */
+  .imei-box {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+  }
+  .imei-input {
+    flex: 1;
+    background: #0d0f17;
+    border: 1px solid var(--card-border);
+    color: #fff;
+    padding: 10px 12px;
+    border-radius: 10px;
+    font-size: 13px;
+  }
+  .Verify-badge {
+    border: 1px solid var(--neon-green);
+    background: rgba(0, 230, 118, 0.1);
+    color: var(--neon-green);
+    padding: 8px 12px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+  .combo-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 9px 0;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-size: 13px;
+  }
+  .combo-item:last-child { border-bottom: none; }
+  /* Тоггл */
+  .switch {
+    position: relative;
+    display: inline-block;
+    width: 44px;
+    height: 24px;
+  }
+  .switch input { opacity: 0; width: 0; height: 0; }
+  .slider-toggle {
+    position: absolute; cursor: pointer;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background-color: #2c3246;
+    transition: .25s;
+    border-radius: 24px;
+  }
+  .slider-toggle:before {
+    position: absolute; content: "";
+    height: 18px; width: 18px;
+    left: 3px; bottom: 3px;
+    background-color: white;
+    transition: .25s;
+    border-radius: 50%;
+  }
+  input:checked + .slider-toggle {
+    background-color: var(--neon-green);
+    box-shadow: 0 0 10px rgba(0, 230, 118, 0.5);
+  }
+  input:checked + .slider-toggle:before {
+    transform: translateX(20px);
+  }
+
+  /* Кружочки */
+  .stories-row {
+    display: flex;
+    gap: 12px;
+    overflow-x: auto;
+    padding: 6px 0;
+  }
+  .story-circle {
+    min-width: 68px;
+    text-align: center;
+    cursor: pointer;
+  }
+  .story-avatar {
+    width: 60px;
+    height: 60px;
+    border-radius: 50%;
+    padding: 2px;
+    background: linear-gradient(45deg, var(--neon-orange), var(--neon-purple), var(--neon-green));
+    margin: 0 auto 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 800;
+    font-size: 18px;
+    color: #fff;
+    position: relative;
+  }
+  .story-avatar span {
+    background: #191d2b;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Экран 3: Подарки */
+  .gift-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 8px;
+    margin: 10px 0;
+  }
+  .gift-card {
+    background: #10131d;
+    border: 1.5px solid var(--card-border);
+    border-radius: 12px;
+    padding: 10px 6px;
+    text-align: center;
+    cursor: pointer;
+    transition: 0.2s;
+  }
+  .gift-card.active {
+    border-color: var(--neon-orange);
+    background: rgba(255, 107, 0, 0.12);
+    box-shadow: 0 0 14px rgba(255, 107, 0, 0.25);
+  }
+  .gift-title { font-size: 11px; font-weight: 700; margin: 6px 0 4px; }
+  .gift-price { font-size: 11px; color: var(--neon-green); font-weight: 800; }
+  .pill-group {
+    display: flex;
+    gap: 6px;
+    margin-top: 8px;
+  }
+  .pill-option {
+    flex: 1;
+    text-align: center;
+    padding: 9px 6px;
+    background: #0e111a;
+    border: 1px solid var(--card-border);
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: 700;
+    cursor: pointer;
+  }
+  .pill-option.active {
+    border-color: var(--neon-purple);
+    background: rgba(157, 78, 221, 0.18);
+    color: #fff;
+  }
+
+  /* Экран 4: Карта */
+  .map-mock {
+    background: radial-gradient(circle at center, #1f293d 0%, #0f131d 100%);
+    height: 125px;
+    border-radius: 10px;
+    border: 1px solid #2e3852;
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin: 10px 0;
+    overflow: hidden;
+  }
+  .map-grid-lines {
+    position: absolute;
+    inset: 0;
+    background-image: linear-gradient(45deg, rgba(157,78,221,0.12) 2px, transparent 2px),
+                      linear-gradient(-45deg, rgba(255,107,0,0.1) 2px, transparent 2px);
+    background-size: 40px 40px;
+  }
+  .map-pin {
+    position: relative;
+    z-index: 2;
+    background: rgba(10, 11, 16, 0.9);
+    border: 1.5px solid var(--neon-orange);
+    padding: 6px 12px;
+    border-radius: 99px;
+    font-size: 12px;
+    font-weight: 800;
+    box-shadow: 0 0 20px rgba(255, 107, 0, 0.6);
+  }
+
+  /* Плавающий нижний чекаут-бар */
+  .sticky-footer {
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    max-width: 412px;
+    background: rgba(14, 17, 26, 0.95);
+    backdrop-filter: blur(14px);
+    border-top: 1px solid #2e354d;
+    padding: 10px 16px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    z-index: 100;
+  }
+  .total-col { display: flex; flex-direction: column; }
+  .total-val { font-size: 19px; font-weight: 900; color: #fff; }
+  .savings-tag { font-size: 11px; color: var(--neon-green); font-weight: 700; }
+
+  /* Модальное окно B2B / Заявки */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.8);
+    backdrop-filter: blur(5px);
+    display: none;
+    justify-content: center;
+    align-items: center;
+    z-index: 200;
+    padding: 16px;
+  }
+  .modal-box {
+    background: #161925;
+    border: 1.5px solid var(--neon-orange);
+    border-radius: 16px;
+    max-width: 380px;
+    width: 100%;
+    padding: 18px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.9);
+  }
+</style>
+</head>
+<body>
+
+<div class="phone-viewport">
+  <!-- HEADER -->
+  <div class="topbar">
+    <div class="brand-logo">ТЕЛЕФОНЫ.ТУТ</div>
+    <div class="live-badge">
+      <span class="pulse-dot"></span> LIVE • ЖУРАВЛЕВА 40
+    </div>
+  </div>
+  <div style="padding:8px 14px; background:#2a1b05; color:#ffd166; border-bottom:1px solid #6b4300; font-size:11px; line-height:1.35; text-align:center;">
+    Демо-прототип. Цены, наличие и условия требуют подтверждения.
+  </div>
+
+  <!-- ЭКРАН 1: HERO + TRADE-IN + LIVE STOCK -->
+  <section class="screen-section" id="screen1">
+    <span class="screen-tag">Экран 1 из 4 • Притяжение (Pull)</span>
+    <div class="hero-stage">
+      <div class="category-tabs">
+        <button class="cat-btn active" onclick="selectProduct('iphone', 'iPhone 16 Pro 128GB', 94990, this)">📱 iPhone 16 Pro</button>
+        <button class="cat-btn" onclick="selectProduct('dyson', 'Dyson Airwrap Complete', 46990, this)">💇‍♀️ Dyson</button>
+        <button class="cat-btn" onclick="selectProduct('ps5', 'PlayStation 5 Slim', 49990, this)">🎮 PS5 Slim</button>
+      </div>
+
+      <div class="device-visual" onclick="rotateMockup()" id="deviceStage">
+        <div class="device-mockup" id="deviceMockup">
+          <div class="dynamic-island"></div>
+          <div class="device-label" id="deviceNameLabel">iPhone 16 Pro<br>94 990 ₽</div>
+        </div>
+      </div>
+
+      <div class="color-swatches">
+        <div class="swatch active" style="background: linear-gradient(135deg, #c29b77, #3d3126);" onclick="changeColor('#c29b77', 'Desert Titanium', this)"></div>
+        <div class="swatch" style="background: linear-gradient(135deg, #635bff, #1f1b4d);" onclick="changeColor('#635bff', 'Deep Purple / Ultramarine', this)"></div>
+        <div class="swatch" style="background: linear-gradient(135deg, #2b2d33, #090a0c);" onclick="changeColor('#2b2d33', 'Black Titanium', this)"></div>
+      </div>
+      <div class="swipe-hint">👆 НАЖМИ НА ГАДЖЕТ ИЛИ ЦВЕТ ДЛЯ 3D-СМЕНЫ</div>
+    </div>
+
+    <!-- FOMO Ticker -->
+    <div class="ticker-wrap">
+      <div class="ticker-move">
+        🔥 TRADE-IN: ОБМЕНЯЙ СТАРЫЙ НА НОВЫЙ ЗА 5 МИНУТ &nbsp;•&nbsp; 🎮 PS5 SLIM В НАЛИЧИИ &nbsp;•&nbsp; 💨 DYSON ОТ 39.990₽ &nbsp;•&nbsp; 🛡️ УСЛОВИЯ ГАРАНТИИ УТОЧНЯЮТСЯ &nbsp;•&nbsp; 🔥 TRADE-IN: ОБМЕНЯЙ СТАРЫЙ НА НОВЫЙ ЗА 5 МИНУТ
+      </div>
+    </div>
+
+    <!-- Калькулятор Trade-in -->
+    <div class="widget-card">
+      <div class="row-between">
+        <div>
+          <strong style="font-size:15px;">⚡ Быстрый Трейд-ин</strong>
+          <div class="sub-text" id="tradeInModelText">Сдаю: iPhone 13 / 14 (оценка: 38 000 ₽)</div>
+        </div>
+        <div class="price-highlight" id="monthlyAfterTrade">от 4 749 ₽/мес</div>
+      </div>
+      <input type="range" id="tradeSlider" min="0" max="65000" step="5000" value="35000" oninput="updateCalculations()">
+      <div class="row-between sub-text">
+        <span>Без сдачи (0 ₽)</span>
+        <span>Скидка по Trade-In: <strong style="color:#fff;" id="tradeDiscountVal">-35 000 ₽</strong></span>
+      </div>
+    </div>
+
+    <!-- Live Stock -->
+    <div class="widget-card" style="margin-bottom:0;">
+      <div class="row-between">
+        <div>
+          <span style="color:#ff4d4d; font-weight:800; font-size:12px;">● LIVE STOCK</span>
+          <div style="font-weight:700; font-size:14px; margin-top:2px;">Горящая партия со склада</div>
+        </div>
+        <div class="stock-timer" id="countdown1">00 : 14 : 48</div>
+      </div>
+      <div class="row-between sub-text" style="margin-top:8px;">
+        <span id="stockModelName">iPhone 16 Pro (Desert)</span>
+        <span style="color:var(--neon-orange); font-weight:700;">Осталось: 3 шт.</span>
+      </div>
+      <div class="progress-bar"><div class="progress-fill"></div></div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 2: ПРОВЕРКА ОРИГИНАЛЬНОСТИ + КОМБО АПСЕЛЛ + КРУЖОЧКИ -->
+  <section class="screen-section" id="screen2">
+    <span class="screen-tag">Экран 2 из 4 • Снятие страха + Апселл (+4 000 ₽ к марже)</span>
+    <div class="section-title">Проверка IMEI (демо, не подтверждает подлинность)</div>
+
+    <div class="widget-card">
+      <div class="imei-box">
+        <input type="text" id="imeiInput" class="imei-input" placeholder="Введите IMEI или серийник (напр. 354891...)" value="359128401958210">
+        <button class="btn-orange" style="padding:0 14px;" onclick="verifyIMEI()">ПРОВЕРИТЬ</button>
+      </div>
+      <div class="Verify-badge" id="imeiResult">
+        <span>ℹ️ ДЕМО-РЕЗУЛЬТАТ • ПОДЛИННОСТЬ НЕ ПОДТВЕРЖДАЕТСЯ</span>
+        <span>Статус требует проверки продавцом</span>
+      </div>
+    </div>
+
+    <!-- Конструктор Комбо -->
+    <div class="widget-card">
+      <div class="row-between" style="margin-bottom:8px;">
+        <strong style="font-size:15px;">🔥 Собери комбо и сэкономь</strong>
+        <span style="background:rgba(255,107,0,0.18); border:1px solid var(--neon-orange); color:#ff9e00; font-size:11px; font-weight:800; padding:3px 8px; border-radius:8px;" id="comboSaveBadge">ВЫГОДА 4 500 ₽</span>
+      </div>
+
+      <div class="combo-item">
+        <div>
+          <div style="font-weight:700;">💎 Бронестекло Remax + установка</div>
+          <div class="sub-text">Защита экрана от сколов • 1 490 ₽</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="upsellGlass" checked onchange="updateCalculations()">
+          <span class="slider-toggle"></span>
+        </label>
+      </div>
+
+      <div class="combo-item">
+        <div>
+          <div style="font-weight:700;">🧲 Чехол MagSafe Clear/Silicone</div>
+          <div class="sub-text">Усиленные магниты • 1 990 ₽</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="upsellCase" checked onchange="updateCalculations()">
+          <span class="slider-toggle"></span>
+        </label>
+      </div>
+
+      <div class="combo-item">
+        <div>
+          <div style="font-weight:700;">⚡ Оригинальный блок Apple 20W + Перенос данных</div>
+          <div class="sub-text">Быстрая зарядка + настройка Apple ID • 2 990 ₽</div>
+        </div>
+        <label class="switch">
+          <input type="checkbox" id="upsellCharger" onchange="updateCalculations()">
+          <span class="slider-toggle"></span>
+        </label>
+      </div>
+    </div>
+
+    <!-- Кружочки из Telegram -->
+    <div class="widget-card" style="margin-bottom:0;">
+      <div class="row-between" style="margin-bottom:8px;">
+        <strong style="font-size:14px;">💬 Живые обзоры покупателей</strong>
+        <span class="sub-text">Из @telefony_tut</span>
+      </div>
+      <div class="stories-row">
+        <div class="story-circle" onclick="playStory('Алексей: «Сдал свой 13 Pro по Трейд-ин на Журавлева 40, за 10 минут перенесли все банки на 16 Pro!»')">
+          <div class="story-avatar"><span>▶ А</span></div>
+          <div class="sub-text" style="font-size:11px;">Алексей</div>
+        </div>
+        <div class="story-circle" onclick="playStory('Мария: «Пробили серийник стайлера Dyson прямо на сайте до оплаты — 100% оригинал!»')">
+          <div class="story-avatar"><span>▶ М</span></div>
+          <div class="sub-text" style="font-size:11px;">Мария</div>
+        </div>
+        <div class="story-circle" onclick="playStory('Даниил: «Взял iPhone + PS5 в рассрочку без переплат, одобрили за 3 минуты!»')">
+          <div class="story-avatar"><span>▶ Д</span></div>
+          <div class="sub-text" style="font-size:11px;">Даниил</div>
+        </div>
+        <div class="story-circle" onclick="playStory('Екатерина: «Привезли за 40 минут по Ростову, оплатила только после личной проверки!»')">
+          <div class="story-avatar"><span>▶ Е</span></div>
+          <div class="sub-text" style="font-size:11px;">Екатерина</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 3: ПОДАРОК + БЕЗ ПРЕДОПЛАТ + БРОНЬ -->
+  <section class="screen-section" id="screen3">
+    <span class="screen-tag">Экран 3 из 4 • Дожим в лид без риска</span>
+    <div class="section-title">Забронируй и закрепи подарок</div>
+
+    <div class="widget-card">
+      <strong style="font-size:13px;">🎁 ВЫБЕРИ СВОЙ ГАРАНТИРОВАННЫЙ ПОДАРОК:</strong>
+      <div class="gift-grid">
+        <div class="gift-card active" onclick="selectGift('Беспроводная зарядка 15W', this)">
+          <div style="font-size:22px;">🔋</div>
+          <div class="gift-title">Зарядка MagSafe 15W</div>
+          <div class="gift-price"><s style="color:#64748b;">1 990₽</s> 0 ₽</div>
+        </div>
+        <div class="gift-card" onclick="selectGift('Защитное стекло Remax', this)">
+          <div style="font-size:22px;">📱</div>
+          <div class="gift-title">Защитное стекло Remax</div>
+          <div class="gift-price"><s style="color:#64748b;">990₽</s> 0 ₽</div>
+        </div>
+        <div class="gift-card" onclick="selectGift('Автомобильное ЗУ 30W', this)">
+          <div style="font-size:22px;">🚗</div>
+          <div class="gift-title">Авто-зарядка 30W</div>
+          <div class="gift-price"><s style="color:#64748b;">1 490₽</s> 0 ₽</div>
+        </div>
+      </div>
+
+      <div class="pill-group">
+        <div class="pill-option active" onclick="selectDelivery('Самовывоз (ул. Журавлева 40/167)', this)">📍 Самовывоз (Журавлева 40)</div>
+        <div class="pill-option" onclick="selectDelivery('Доставка по Ростову за 30 мин', this)">🚀 Доставка (от 30 мин)</div>
+      </div>
+    </div>
+
+    <div class="widget-card" style="margin-bottom:0;">
+      <strong style="font-size:13px;">💵 ОПЛАТА ПРИ ПОЛУЧЕНИИ (БЕЗ ПРЕДОПЛАТ):</strong>
+      <div class="pill-group">
+        <div class="pill-option active" onclick="selectPayment('Наличные / Перевод', this)">Наличные</div>
+        <div class="pill-option" onclick="selectPayment('Картой / СБП', this)">Картой / СБП</div>
+        <div class="pill-option" onclick="selectPayment('Рассрочка / Сплит', this)">В рассрочку</div>
+      </div>
+      <div style="margin-top:12px; font-size:12px; color:var(--neon-green); text-align:center; font-weight:700;">
+        ✓ Оплата только ПОСЛЕ личной проверки устройства
+      </div>
+    </div>
+  </section>
+
+  <!-- ЭКРАН 4: РАССРОЧКА + ШОУРУМ + ЛИД-МАГНИТ -->
+  <section class="screen-section" id="screen4" style="border-bottom:none;">
+    <span class="screen-tag">Экран 4 из 4 • Удар по инерции (Habit) + Retention</span>
+    <div class="section-title">Рассрочка 0% и Шоурум в центре</div>
+
+    <div class="widget-card">
+      <div class="row-between">
+        <strong style="font-size:14px;">🏦 Рассрочка за 3 минуты</strong>
+        <span class="price-highlight" id="installmentMonthly">5 490 ₽/мес</span>
+      </div>
+      <div class="pill-group" style="margin:10px 0;">
+        <div class="pill-option" onclick="setMonths(6, this)">6 мес</div>
+        <div class="pill-option active" onclick="setMonths(12, this)">12 мес</div>
+        <div class="pill-option" onclick="setMonths(24, this)">24 мес</div>
+      </div>
+      <div class="Verify-badge" style="font-size:11px;">
+        <span>ℹ️ ПРЕДВАРИТЕЛЬНЫЙ РАСЧЁТ, НЕ ГАРАНТИЯ ОДОБРЕНИЯ</span>
+        <span>Первый взнос и условия уточняются</span>
+      </div>
+    </div>
+
+    <!-- Карта Шоурума -->
+    <div class="widget-card">
+      <strong style="font-size:14px;">📍 Наш шоурум в Ростове-на-Дону</strong>
+      <div class="map-mock">
+        <div class="map-grid-lines"></div>
+        <div class="map-pin">📍 ул. Журавлева 40/167 (10:00–21:00)</div>
+      </div>
+      <div class="sub-text" style="text-align:center; color:#e2e8f0; font-weight:600;">
+        🅿️ Бесплатная парковка • ☕ Кофе и перенос данных за 0 ₽
+      </div>
+    </div>
+
+    <!-- Лид-магнит для уходящего трафика -->
+    <div class="widget-card" style="border-color:var(--neon-purple); background:linear-gradient(135deg, rgba(157,78,221,0.16), rgba(20,23,34,0.95));">
+      <div style="font-weight:800; font-size:15px; margin-bottom:4px;">🎁 Не берешь сегодня?</div>
+      <div class="sub-text" style="color:#e2e8f0; margin-bottom:12px;">
+        Забери закрытый <strong>ОПТОВЫЙ ПРАЙС</strong> в Telegram + заморозь <strong>СКИДКУ 2 000 ₽</strong> на комбо-набор
+      </div>
+      <button class="btn-orange" style="width:100%; background:linear-gradient(90deg, #ff6b00, #9d4edd);" onclick="openLeadModal('price_bot')">
+        📥 СКАЧАТЬ ПРАЙС + СКИДКА 2 000 ₽ ≫
+      </button>
+    </div>
+  </section>
+
+  <!-- ПЛАВАЮЩИЙ ЧЕКАУТ БАР -->
+  <div class="sticky-footer">
+    <div class="total-col">
+      <span class="sub-text">Итого с Trade-In:</span>
+      <span class="total-val" id="finalTotalDisplay">63 470 ₽</span>
+      <span class="savings-tag" id="finalMarginHint">Подарок закреплен ✓</span>
+    </div>
+    <button class="btn-orange" style="padding:13px 18px; font-size:14px;" onclick="openLeadModal('order')">
+      🔥 ЗАБРАТЬ СЕГОДНЯ ≫
+    </button>
+  </div>
+</div>
+
+<!-- МОДАЛЬНОЕ ОКНО СФОРМИРОВАННОЙ ЗАЯВКИ -->
+<div class="modal-overlay" id="leadModal" onclick="closeModal(event)">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <h3 style="margin-bottom:8px; font-size:18px;" id="modalTitle">🚀 Бронь готова к отправке!</h3>
+    <p class="sub-text" style="margin-bottom:12px;" id="modalDesc"></p>
+    <div style="background:#0c0e16; border:1px solid #283048; border-radius:10px; padding:12px; font-size:12px; line-height:1.5; margin-bottom:14px;" id="orderSummaryText"></div>
+    <button class="btn-orange" style="width:100%; margin-bottom:8px;" onclick="redirectToTelegram()">
+      ✈️ ОТПРАВИТЬ В TELEGRAM (@telefony_tut)
+    </button>
+    <button class="btn-purple" style="width:100%; padding:9px;" onclick="document.getElementById('leadModal').style.display='none'">
+      Вернуться к настройке комбо
+    </button>
+  </div>
+</div>
+
+<script>
+  let state = {
+    productName: 'iPhone 16 Pro 128GB',
+    basePrice: 94990,
+    color: 'Desert Titanium',
+    tradeIn: 35000,
+    gift: 'Беспроводная зарядка 15W',
+    delivery: 'Самовывоз (ул. Журавлева 40/167)',
+    payment: 'Наличные / Перевод',
+    months: 12,
+    rotation: 0
+  };
+
+  function selectProduct(type, name, price, btn) {
+    document.querySelectorAll('.cat-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    state.productName = name;
+    state.basePrice = price;
+    document.getElementById('deviceNameLabel').innerHTML = name + '<br>' + price.toLocaleString('ru-RU') + ' ₽';
+    document.getElementById('stockModelName').innerText = name + ' (' + state.color + ')';
+    rotateMockup();
+    updateCalculations();
+  }
+
+  function changeColor(hex, colorName, el) {
+    document.querySelectorAll('.swatch').forEach(s => s.classList.remove('active'));
+    el.classList.add('active');
+    state.color = colorName;
+    const mockup = document.getElementById('deviceMockup');
+    mockup.style.background = `linear-gradient(135deg, ${hex} 0%, #141722 90%)`;
+    document.getElementById('stockModelName').innerText = state.productName + ' (' + colorName + ')';
+    rotateMockup();
+  }
+
+  function rotateMockup() {
+    state.rotation += 12;
+    const stage = document.getElementById('deviceStage');
+    stage.style.transform = `scale(1.05) rotateY(${state.rotation}deg)`;
+    setTimeout(() => { stage.style.transform = 'scale(1) rotateY(0deg)'; }, 260);
+  }
+
+  function verifyIMEI() {
+    const val = document.getElementById('imeiInput').value.trim();
+    const res = document.getElementById('imeiResult');
+    res.style.opacity = '0.4';
+    setTimeout(() => {
+      res.style.opacity = '1';
+        res.innerHTML = `<span>ℹ️ ДЕМО-ПРОВЕРКА IMEI ${val.slice(0,6)}***</span><span>Подлинность и гарантия требуют отдельного подтверждения</span>`;
+    }, 300);
+  }
+
+  function playStory(quote) {
+    alert('🎥 Видео-кружочек из @telefony_tut:\n\n' + quote);
+  }
+
+  function selectGift(giftName, el) {
+    document.querySelectorAll('.gift-card').forEach(c => c.classList.remove('active'));
+    el.classList.add('active');
+    state.gift = giftName;
+  }
+
+  function selectDelivery(deliv, el) {
+    el.parentElement.querySelectorAll('.pill-option').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    state.delivery = deliv;
+  }
+
+  function selectPayment(pay, el) {
+    el.parentElement.querySelectorAll('.pill-option').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    state.payment = pay;
+  }
+
+  function setMonths(m, el) {
+    el.parentElement.querySelectorAll('.pill-option').forEach(p => p.classList.remove('active'));
+    el.classList.add('active');
+    state.months = m;
+    updateCalculations();
+  }
+
+  function updateCalculations() {
+    const tradeVal = parseInt(document.getElementById('tradeSlider').value) || 0;
+    state.tradeIn = tradeVal;
+    document.getElementById('tradeDiscountVal').innerText = '-' + tradeVal.toLocaleString('ru-RU') + ' ₽';
+    document.getElementById('tradeInModelText').innerText = tradeVal > 0
+      ? `Оценка вашего гаджета: ${tradeVal.toLocaleString('ru-RU')} ₽`
+      : 'Покупка без сдачи старого устройства';
+
+    let upsellTotal = 0;
+    if (document.getElementById('upsellGlass').checked) upsellTotal += 1490;
+    if (document.getElementById('upsellCase').checked) upsellTotal += 1990;
+    if (document.getElementById('upsellCharger').checked) upsellTotal += 2990;
+
+    const finalSum = Math.max(14990, state.basePrice - tradeVal + upsellTotal);
+    const perMonth12 = Math.round(finalSum / 12);
+    const perMonthSelected = Math.round(finalSum / state.months);
+
+    document.getElementById('monthlyAfterTrade').innerText = 'от ' + perMonth12.toLocaleString('ru-RU') + ' ₽/мес';
+    document.getElementById('installmentMonthly').innerText = perMonthSelected.toLocaleString('ru-RU') + ' ₽/мес';
+    document.getElementById('finalTotalDisplay').innerText = finalSum.toLocaleString('ru-RU') + ' ₽';
+    document.getElementById('finalMarginHint').innerText = upsellTotal > 0
+      ? `Комбо +${upsellTotal.toLocaleString('ru-RU')} ₽ • Подарок 0 ₽`
+      : `Подарок: ${state.gift}`;
+  }
+
+  function openLeadModal(mode) {
+    const modal = document.getElementById('leadModal');
+    const summary = document.getElementById('orderSummaryText');
+    const title = document.getElementById('modalTitle');
+    const desc = document.getElementById('modalDesc');
+
+    let upsells = [];
+    if (document.getElementById('upsellGlass').checked) upsells.push('Бронестекло (1 490₽)');
+    if (document.getElementById('upsellCase').checked) upsells.push('MagSafe чехол (1 990₽)');
+    if (document.getElementById('upsellCharger').checked) upsells.push('Блок 20W + Перенос (2 990₽)');
+
+    if (mode === 'price_bot') {
+      title.innerText = '📥 Забрать оптовый прайс + купон 2 000 ₽';
+      desc.innerText = 'Купон 2 000 ₽ автоматически закреплен за вашим Telegram-аккаунтом на 72 часа (действует при заказе Комбо или Trade-In).';
+    } else {
+      title.innerText = '🚀 Бронь товара на 15 минут готова!';
+      desc.innerText = 'Менеджер на ул. Журавлева 40/167 получит готовую спецификацию вашего заказа:';
+    }
+
+    summary.innerHTML = `
+      <strong>Товар:</strong> ${state.productName} (${state.color})<br>
+      <strong>Зачет Trade-In:</strong> -${state.tradeIn.toLocaleString('ru-RU')} ₽<br>
+      <strong>Комбо-набор:</strong> ${upsells.length ? upsells.join(', ') : 'Без доп. аксессуаров'}<br>
+      <strong>Подарок (0 ₽):</strong> ${state.gift}<br>
+      <strong>Получение:</strong> ${state.delivery}<br>
+      <strong>Оплата:</strong> ${state.payment} (${state.months} мес.)<br>
+      <hr style="border-color:#262b3d; margin:8px 0;">
+      <strong style="color:#00e676; font-size:14px;">ИТОГО К ОПЛАТЕ: ${document.getElementById('finalTotalDisplay').innerText}</strong>
+    `;
+    modal.style.display = 'flex';
+  }
+
+  function closeModal(e) {
+    document.getElementById('leadModal').style.display = 'none';
+  }
+
+  function redirectToTelegram() {
+    window.open('https://t.me/telefony_tut', '_blank');
+  }
+
+  // Таймер обратного отсчета
+  let sec = 14 * 60 + 48;
+  setInterval(() => {
+    if (sec > 0) sec--;
+    const m = String(Math.floor(sec / 60)).padStart(2, '0');
+    const s = String(sec % 60).padStart(2, '0');
+    document.getElementById('countdown1').innerText = `00 : ${m} : ${s}`;
+  }, 1000);
+
+  updateCalculations();
+</script>
+</body>
+</html>
