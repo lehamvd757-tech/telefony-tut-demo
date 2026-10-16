@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 220" role="img" aria-labelledby="t">
+<title id="t">iPhone 16: original schematic, front rear and side views; not a photograph</title>
+<g stroke="#cbd5e1" stroke-width="2.5">
+<rect x="47" y="29" width="72" height="156" rx="17" fill="#161922"/><rect x="52" y="34" width="62" height="146" rx="13" fill="#090b11" stroke="#41495a"/><rect x="68" y="40" width="28" height="7" rx="4" fill="#030407" stroke="none"/>
+<rect x="164" y="17" width="88" height="180" rx="20" fill="__BODY_COLOR__"/><rect x="169" y="22" width="78" height="170" rx="17" fill="none" stroke="#ffffff" opacity=".16"/><rect x="174" y="28" width="32" height="62" rx="15" fill="#262a34" stroke="#9ba4b6" stroke-width="1.5"/><circle cx="190" cy="44" r="8.5" fill="#080a10"/><circle cx="190" cy="70" r="8.5" fill="#080a10"/><circle cx="190" cy="44" r="3" fill="#68758a" stroke="none"/><circle cx="190" cy="70" r="3" fill="#68758a" stroke="none"/><circle cx="201" cy="83" r="3" fill="#f4e4bd" stroke="none"/>
+<rect x="307" y="23" width="13" height="168" rx="6" fill="__BODY_COLOR__"/><path d="M308 46h11M308 63h11M308 154h11" fill="none" stroke="#778092"/>
+</g><g fill="#98a2b3" font-family="Arial,sans-serif" font-size="8" text-anchor="middle"><text x="83" y="207">СПЕРЕДИ</text><text x="208" y="207">СЗАДИ</text><text x="313" y="207">СБОКУ</text></g><text x="208" y="117" fill="#fff" opacity=".65" font-family="Arial,sans-serif" font-size="8" text-anchor="middle">СХЕМА · НЕ ФОТО</text>
+</svg>

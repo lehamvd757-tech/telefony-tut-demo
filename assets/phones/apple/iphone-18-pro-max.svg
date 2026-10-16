@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 220" role="img" aria-labelledby="t">
+<title id="t">iPhone 18 Pro Max: original schematic, front rear and side views; not a photograph</title>
+<g stroke="#cbd5e1" stroke-width="2.5">
+<rect x="42" y="20" width="82" height="174" rx="19" fill="#161922"/><rect x="47" y="25" width="72" height="164" rx="15" fill="#090b11" stroke="#41495a"/><rect x="69" y="32" width="28" height="7" rx="4" fill="#030407" stroke="none"/>
+<rect x="157" y="12" width="100" height="190" rx="22" fill="__BODY_COLOR__"/><rect x="162" y="17" width="90" height="180" rx="19" fill="none" stroke="#ffffff" opacity=".16"/><rect x="167" y="22" width="55" height="50" rx="13" fill="#171922" stroke="#9ba4b6" stroke-width="1.5"/><circle cx="182" cy="37" r="8.5" fill="#080a10"/><circle cx="206" cy="37" r="8.5" fill="#080a10"/><circle cx="182" cy="60" r="8.5" fill="#080a10"/><circle cx="182" cy="37" r="3" fill="#68758a" stroke="none"/><circle cx="206" cy="37" r="3" fill="#68758a" stroke="none"/><circle cx="182" cy="60" r="3" fill="#68758a" stroke="none"/><circle cx="214" cy="60" r="3" fill="#f4e4bd" stroke="none"/>
+<rect x="308" y="18" width="15" height="178" rx="7" fill="__BODY_COLOR__"/><path d="M309 44h13M309 61h13M309 160h13" fill="none" stroke="#778092"/>
+</g><g fill="#98a2b3" font-family="Arial,sans-serif" font-size="8" text-anchor="middle"><text x="83" y="211">СПЕРЕДИ</text><text x="207" y="211">СЗАДИ</text><text x="315" y="211">СБОКУ</text></g><text x="207" y="120" fill="#fff" opacity=".65" font-family="Arial,sans-serif" font-size="8" text-anchor="middle">СХЕМА · НЕ ФОТО</text>
+</svg>

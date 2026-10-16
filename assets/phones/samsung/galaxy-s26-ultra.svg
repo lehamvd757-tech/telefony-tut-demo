@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 220" role="img" aria-labelledby="t">
+<title id="t">Galaxy S26 Ultra: original schematic, front rear and side views; not a photograph</title>
+<g stroke="#cbd5e1" stroke-width="2.5">
+<rect x="43" y="27" width="78" height="160" rx="19" fill="#171a22"/><rect x="48" y="32" width="68" height="150" rx="15" fill="#080a10" stroke="#41495a"/><circle cx="82" cy="42" r="3" fill="#080a10"/>
+<rect x="161" y="16" width="96" height="184" rx="21" fill="__BODY_COLOR__"/><rect x="166" y="21" width="86" height="174" rx="18" fill="none" stroke="#ffffff" opacity=".16"/><circle cx="181" cy="39" r="8.5" fill="#090b10"/><circle cx="181" cy="62" r="8.5" fill="#090b10"/><circle cx="181" cy="85" r="8.5" fill="#090b10"/><circle cx="181" cy="39" r="3" fill="#758196" stroke="none"/><circle cx="181" cy="62" r="3" fill="#758196" stroke="none"/><circle cx="181" cy="85" r="3" fill="#758196" stroke="none"/><circle cx="207" cy="39" r="6" fill="#090b10"/><circle cx="207" cy="39" r="2" fill="#758196" stroke="none"/><circle cx="207" cy="58" r="3" fill="#f4e4bd" stroke="none"/><path d="M244 115v55" stroke="#4d5667" stroke-width="2"/>
+<rect x="310" y="21" width="13" height="174" rx="6" fill="__BODY_COLOR__"/><path d="M310 48h13M310 159h13" fill="none" stroke="#778092"/>
+</g><g fill="#98a2b3" font-family="Arial,sans-serif" font-size="8" text-anchor="middle"><text x="82" y="207">СПЕРЕДИ</text><text x="209" y="207">СЗАДИ</text><text x="316" y="207">СБОКУ</text></g><text x="209" y="127" fill="#fff" opacity=".65" font-family="Arial,sans-serif" font-size="8" text-anchor="middle">СХЕМА · НЕ ФОТО</text>
+</svg>

@@ -1,0 +1,8 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 420 220" role="img" aria-labelledby="t">
+<title id="t">Galaxy S26+: original schematic, front rear and side views; not a photograph</title>
+<g stroke="#cbd5e1" stroke-width="2.5">
+<rect x="43" y="23" width="78" height="168" rx="19" fill="#171a22"/><rect x="48" y="28" width="68" height="158" rx="15" fill="#080a10" stroke="#41495a"/><circle cx="82" cy="38" r="3" fill="#080a10"/>
+<rect x="163" y="14" width="92" height="188" rx="21" fill="__BODY_COLOR__"/><rect x="168" y="19" width="82" height="178" rx="18" fill="none" stroke="#ffffff" opacity=".16"/><circle cx="183" cy="37" r="8" fill="#090b10"/><circle cx="183" cy="59" r="8" fill="#090b10"/><circle cx="183" cy="81" r="8" fill="#090b10"/><circle cx="183" cy="37" r="3" fill="#758196" stroke="none"/><circle cx="183" cy="59" r="3" fill="#758196" stroke="none"/><circle cx="183" cy="81" r="3" fill="#758196" stroke="none"/><circle cx="207" cy="39" r="5" fill="#090b10"/><circle cx="207" cy="39" r="2" fill="#758196" stroke="none"/><circle cx="207" cy="59" r="3" fill="#f4e4bd" stroke="none"/>
+<rect x="310" y="19" width="12" height="178" rx="6" fill="__BODY_COLOR__"/><path d="M310 47h12M310 160h12" fill="none" stroke="#778092"/>
+</g><g fill="#98a2b3" font-family="Arial,sans-serif" font-size="8" text-anchor="middle"><text x="82" y="207">СПЕРЕДИ</text><text x="209" y="207">СЗАДИ</text><text x="316" y="207">СБОКУ</text></g><text x="209" y="124" fill="#fff" opacity=".65" font-family="Arial,sans-serif" font-size="8" text-anchor="middle">СХЕМА · НЕ ФОТО</text>
+</svg>

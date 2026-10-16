@@ -224,11 +224,28 @@
     border-radius: 16px;
     overflow: hidden;
     border: 1px solid rgba(255,255,255,0.12);
+    position: relative;
   }
   .device-visual.has-photo .device-photo {
     width: 100%; height: 100%; max-height: none;
     object-fit: contain; filter: none;
   }
+  .phone-art-layer {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    max-width: none;
+    max-height: none;
+    object-fit: contain;
+    opacity: 0;
+    transition: opacity .24s ease;
+    filter: drop-shadow(0 10px 16px rgba(0,0,0,.42));
+    pointer-events: none;
+  }
+  .phone-art-layer.active { opacity: 1; }
+  .phone-visual-note { margin-top: 3px; color: #9da7b8; font-size: 9px; letter-spacing: .35px; }
+  .phone-visual-note[hidden] { display: none; }
   .swatch { box-shadow: inset 0 0 0 1px rgba(255,255,255,0.35); }
   .device-photo {
     max-width: 100%;
@@ -698,11 +715,14 @@
 
       <div class="device-visual" onclick="rotateMockup()" id="deviceStage">
         <img id="deviceImg" class="device-photo" alt="" hidden>
+        <img id="deviceImgNext" class="device-photo phone-art-layer" alt="" hidden>
         <div class="device-mockup shape-phone" id="deviceMockup">
           <div class="dynamic-island"></div>
           <div class="device-label" id="deviceNameLabel"></div>
         </div>
       </div>
+
+      <p class="phone-visual-note" id="phoneVisualNote">Схематичная визуализация · не фотография</p>
 
       <div class="color-swatches" id="colorSwatches"></div>
       <div class="swipe-hint">👆 НАЖМИ НА ГАДЖЕТ ИЛИ ЦВЕТ ДЛЯ 3D-СМЕНЫ</div>
@@ -986,38 +1006,38 @@
   // цены тестовые, а изображения без точного ресурса показываются как маркированный макет.
   const PHONE_CATALOG = [
     { id:'iphone-18-pro', brand:'apple', brandName:'Apple', name:'iPhone 18 Pro', capacities:[256,512,1024,2048], prices:{256:94990,512:114990,1024:134990,2048:154990}, sourceUrl:'https://support.apple.com/en-euro/148590', demoPrice:true, colors:[
-      {id:'burgundy',name:'Бордовый',officialName:'Burgundy',hex:'#5e1f33',imageUrl:'https://www.apple.com/v/iphone-18-pro/c/images/overview/product-viewer/color_burgundy__f95it7a6dnyq_large.jpg'},
-      {id:'glacier',name:'Ледниковый',officialName:'Glacier',hex:'#b7cde0',imageUrl:'https://www.apple.com/v/iphone-18-pro/c/images/overview/product-viewer/color_glacier__fkxlpbz0ruy6_large.jpg'},
-      {id:'silver',name:'Серебристый',officialName:'Silver',hex:'#dfe1e5',imageUrl:'https://www.apple.com/v/iphone-18-pro/c/images/overview/product-viewer/color_silver__c0oudn0fzw4m_large.jpg'},
-      {id:'black',name:'Чёрный',officialName:'Black',hex:'#1b1b1e',imageUrl:'https://www.apple.com/v/iphone-18-pro/c/images/overview/product-viewer/color_black__dseo2tvypuc2_large.jpg'}
-    ]},
+      {id:'burgundy',name:'Бордовый',officialName:'Burgundy',hex:'#5e1f33'},
+      {id:'glacier',name:'Ледниковый',officialName:'Glacier',hex:'#b7cde0'},
+      {id:'silver',name:'Серебристый',officialName:'Silver',hex:'#dfe1e5'},
+      {id:'black',name:'Чёрный',officialName:'Black',hex:'#1b1b1e'}
+    ], visual:{asset:'assets/phones/apple/iphone-18-pro.svg',views:['front','back','side'],kind:'original-schematic'}},
     { id:'iphone-18-pro-max', brand:'apple', brandName:'Apple', name:'iPhone 18 Pro Max', capacities:[256,512,1024,2048], prices:{256:109990,512:129990,1024:149990,2048:169990}, sourceUrl:'https://support.apple.com/en-euro/148590', demoPrice:true, colors:[
       {id:'burgundy',name:'Бордовый',officialName:'Burgundy',hex:'#5e1f33'}, {id:'glacier',name:'Ледниковый',officialName:'Glacier',hex:'#b7cde0'}, {id:'silver',name:'Серебристый',officialName:'Silver',hex:'#dfe1e5'}, {id:'black',name:'Чёрный',officialName:'Black',hex:'#1b1b1e'}
-    ]},
+    ], visual:{asset:'assets/phones/apple/iphone-18-pro-max.svg',views:['front','back','side'],kind:'original-schematic'}},
     { id:'iphone-17-pro', brand:'apple', brandName:'Apple', name:'iPhone 17 Pro', capacities:[256,512,1024], prices:{256:89990,512:109990,1024:129990}, sourceUrl:'https://www.apple.com/iphone-17-pro/specs/', demoPrice:true, colors:[
       {id:'silver',name:'Серебристый',officialName:'Silver',hex:'#dfe1e5'}, {id:'cosmic-orange',name:'Космический оранжевый',officialName:'Cosmic Orange',hex:'#e66b32'}, {id:'deep-blue',name:'Глубокий синий',officialName:'Deep Blue',hex:'#243955'}
-    ]},
+    ], visual:{asset:'assets/phones/apple/iphone-17-pro.svg',views:['front','back','side'],kind:'original-schematic'}},
     { id:'iphone-17-pro-max', brand:'apple', brandName:'Apple', name:'iPhone 17 Pro Max', capacities:[256,512,1024,2048], prices:{256:99990,512:119990,1024:139990,2048:159990}, sourceUrl:'https://www.apple.com/iphone-17-pro/specs/', demoPrice:true, colors:[
-      {id:'silver',name:'Серебристый',officialName:'Silver',hex:'#dfe1e5'}, {id:'cosmic-orange',name:'Космический оранжевый',officialName:'Cosmic Orange',hex:'#e66b32'}, {id:'deep-blue',name:'Глубокий синий',officialName:'Deep Blue',hex:'#243955'}
-    ]},
+      {id:'silver',name:'Серебристый',officialName:'Silver',hex:'#dfe1e5'}, {id:'cosmic-orange',name:'Космический оранжевый',hex:'#e66b32'}, {id:'deep-blue',name:'Глубокий синий',hex:'#243955'}
+    ], visual:{asset:'assets/phones/apple/iphone-17-pro-max.svg',views:['front','back','side'],kind:'original-schematic'}},
     { id:'iphone-17', brand:'apple', brandName:'Apple', name:'iPhone 17', capacities:[256,512], prices:{256:69990,512:79990}, sourceUrl:'https://www.apple.com/iphone-17/specs/', demoPrice:true, colors:[
       {id:'black',name:'Чёрный',officialName:'Black',hex:'#202124'}, {id:'white',name:'Белый',officialName:'White',hex:'#f0f0ed'}, {id:'mist-blue',name:'Туманно-голубой',officialName:'Mist Blue',hex:'#b8cddb'}, {id:'sage',name:'Шалфейный',officialName:'Sage',hex:'#aebaa9'}, {id:'lavender',name:'Лавандовый',officialName:'Lavender',hex:'#c5b6d8'}
-    ]},
+    ], visual:{asset:'assets/phones/apple/iphone-17.svg',views:['front','back','side'],kind:'original-schematic'}},
     { id:'iphone-16', brand:'apple', brandName:'Apple', name:'iPhone 16', capacities:[128,256,512], prices:{128:59990,256:69990,512:79990}, sourceUrl:'https://www.apple.com/iphone-16/specs/', demoPrice:true, colors:[
       {id:'black',name:'Чёрный',officialName:'Black',hex:'#202124'}, {id:'white',name:'Белый',officialName:'White',hex:'#f0f0ed'}, {id:'pink',name:'Розовый',officialName:'Pink',hex:'#f0c7ce'}, {id:'teal',name:'Бирюзовый',officialName:'Teal',hex:'#7bafad'}, {id:'ultramarine',name:'Ультрамарин',officialName:'Ultramarine',hex:'#5d63d8'}
-    ]},
+    ], visual:{asset:'assets/phones/apple/iphone-16.svg',views:['front','back','side'],kind:'original-schematic'}},
     { id:'galaxy-s26-ultra', brand:'samsung', brandName:'Samsung', name:'Galaxy S26 Ultra', capacities:[256,512,1024], prices:{256:99990,512:109990,1024:129990}, sourceUrl:'https://www.samsung.com/uk/smartphones/galaxy-s26/specs/', demoPrice:true, colors:[
       {id:'cobalt-violet',name:'Кобальтовый фиолетовый',officialName:'Cobalt Violet',hex:'#51446c'}, {id:'sky-blue',name:'Небесно-голубой',officialName:'Sky Blue',hex:'#a9c5d9'}, {id:'black',name:'Чёрный',officialName:'Black',hex:'#27282b'}, {id:'white',name:'Белый',officialName:'White',hex:'#e8e6e2'}, {id:'silver-shadow',name:'Серебряная тень',officialName:'Silver Shadow',hex:'#aeb4bb'}, {id:'pink-gold',name:'Розовое золото',officialName:'Pink Gold',hex:'#cdaeb0'}
-    ]},
+    ], visual:{asset:'assets/phones/samsung/galaxy-s26-ultra.svg',views:['front','back','side'],kind:'original-schematic'}},
     { id:'galaxy-s26-plus', brand:'samsung', brandName:'Samsung', name:'Galaxy S26+', capacities:[256,512], prices:{256:79990,512:89990}, sourceUrl:'https://www.samsung.com/uk/smartphones/galaxy-s26/specs/', demoPrice:true, colors:[
       {id:'cobalt-violet',name:'Кобальтовый фиолетовый',officialName:'Cobalt Violet',hex:'#51446c'}, {id:'sky-blue',name:'Небесно-голубой',officialName:'Sky Blue',hex:'#a9c5d9'}, {id:'black',name:'Чёрный',officialName:'Black',hex:'#27282b'}, {id:'white',name:'Белый',officialName:'White',hex:'#e8e6e2'}, {id:'silver-shadow',name:'Серебряная тень',officialName:'Silver Shadow',hex:'#aeb4bb'}, {id:'pink-gold',name:'Розовое золото',officialName:'Pink Gold',hex:'#cdaeb0'}
-    ]},
+    ], visual:{asset:'assets/phones/samsung/galaxy-s26-plus.svg',views:['front','back','side'],kind:'original-schematic'}},
     { id:'galaxy-s26', brand:'samsung', brandName:'Samsung', name:'Galaxy S26', capacities:[256,512], prices:{256:69990,512:79990}, sourceUrl:'https://www.samsung.com/uk/smartphones/galaxy-s26/specs/', demoPrice:true, colors:[
       {id:'cobalt-violet',name:'Кобальтовый фиолетовый',officialName:'Cobalt Violet',hex:'#51446c'}, {id:'sky-blue',name:'Небесно-голубой',officialName:'Sky Blue',hex:'#a9c5d9'}, {id:'black',name:'Чёрный',officialName:'Black',hex:'#27282b'}, {id:'white',name:'Белый',officialName:'White',hex:'#e8e6e2'}, {id:'silver-shadow',name:'Серебряная тень',officialName:'Silver Shadow',hex:'#aeb4bb'}, {id:'pink-gold',name:'Розовое золото',officialName:'Pink Gold',hex:'#cdaeb0'}
-    ]},
+    ], visual:{asset:'assets/phones/samsung/galaxy-s26.svg',views:['front','back','side'],kind:'original-schematic'}},
     { id:'galaxy-s25-ultra', brand:'samsung', brandName:'Samsung', name:'Galaxy S25 Ultra', capacities:[256,512,1024], prices:{256:84990,512:94990,1024:109990}, sourceUrl:'https://www.samsung.com/uk/smartphones/galaxy-s25-ultra/specs/', demoPrice:true, colors:[
       {id:'titanium-silverblue',name:'Титановый серебристо-синий',officialName:'Titanium Silverblue',hex:'#8994a5'}, {id:'titanium-black',name:'Титановый чёрный',officialName:'Titanium Black',hex:'#353535'}, {id:'titanium-grey',name:'Титановый серый',officialName:'Titanium Grey',hex:'#92918e'}, {id:'titanium-whitesilver',name:'Титановый серебристо-белый',officialName:'Titanium Whitesilver',hex:'#d9d9d3'}, {id:'titanium-jetblack',name:'Титановый угольно-чёрный',officialName:'Titanium Jetblack',hex:'#1f2022'}, {id:'titanium-jadegreen',name:'Титановый нефритово-зелёный',officialName:'Titanium Jadegreen',hex:'#737d70'}, {id:'titanium-pinkgold',name:'Титановый розово-золотой',officialName:'Titanium Pinkgold',hex:'#b88f87'}
-    ]}
+    ], visual:{asset:'assets/phones/samsung/galaxy-s25-ultra.svg',views:['front','back','side'],kind:'original-schematic'}}
   ];
 
   const PRODUCTS = {
@@ -1053,7 +1073,9 @@
     delivery: 'Самовывоз (ул. Журавлева 40/167)',
     payment: 'Наличные / Перевод',
     months: 12,
-    rotation: 0
+    rotation: 0,
+    visualRequestId: 0,
+    visualKey: ''
   };
   let configDraft = null;
 
@@ -1090,38 +1112,17 @@
     const img = document.getElementById('deviceImg');
     const stage = document.getElementById('deviceStage');
     const label = document.getElementById('deviceNameLabel');
-    const imageUrl = color.imageUrl || '';
     mock.className = 'device-mockup shape-phone';
     mock.style.background = `linear-gradient(135deg, color-mix(in srgb, ${color.hex} 70%, white) 0%, ${color.hex} 50%, color-mix(in srgb, ${color.hex} 65%, black) 100%)`;
-    label.innerHTML = `${phone.name}<br>${formatMemory(state.memory)} · ${state.basePrice.toLocaleString('ru-RU')} ₽`;
+    label.textContent = `${phone.name} · ${formatMemory(state.memory)} · ДЕМО-МАКЕТ`;
     document.getElementById('stockModelName').innerText = `${phone.name} · ${formatMemory(state.memory)} (${color.name})`;
-    img.onload = null;
-    img.onerror = null;
-
-    if (imageUrl) {
-      img.onerror = () => {
-        img.hidden = true;
-        mock.style.display = '';
-        stage.classList.remove('has-photo');
-        stage.style.background = '';
-        label.innerHTML = `${phone.name}<br>${formatMemory(state.memory)} · ДЕМО-МАКЕТ`;
-      };
-      stage.classList.add('has-photo');
-      stage.style.background = '#080a10';
-      img.style.objectFit = 'contain';
-      img.style.visibility = 'hidden';
-      img.onload = () => { img.style.visibility = ''; };
-      img.src = imageUrl;
-      img.alt = `${phone.name}, ${color.officialName}`;
-      img.hidden = false;
-      mock.style.display = 'none';
-    } else {
-      img.hidden = true;
-      mock.style.display = '';
-      stage.classList.remove('has-photo');
-      stage.style.background = '';
-      label.innerHTML = `${phone.name}<br>${formatMemory(state.memory)} · ДЕМО-МАКЕТ`;
-    }
+    document.getElementById('phoneVisualNote').hidden = false;
+    document.getElementById('phoneVisualNote').textContent = 'Схематичная визуализация · не фотография';
+    [img, document.getElementById('deviceImgNext')].forEach(layer => layer.classList.add('phone-art-layer'));
+    stage.classList.add('has-photo');
+    stage.style.background = '#080a10';
+    mock.style.display = 'none';
+    loadPhoneVisual(phone, color);
 
     const box = document.getElementById('colorSwatches');
     box.innerHTML = '';
@@ -1146,12 +1147,94 @@
     if (Number(slider.value) > Number(slider.max)) slider.value = slider.max;
   }
 
+  async function loadPhoneVisual(phone, color) {
+    const visualKey = `${phone.id}:${color.id}`;
+    const stage = document.getElementById('deviceStage');
+    const mock = document.getElementById('deviceMockup');
+    const layers = [document.getElementById('deviceImg'), document.getElementById('deviceImgNext')];
+    const cached = layers.find(layer => layer.dataset.visualKey === visualKey && layer.dataset.objectUrl);
+    if (cached) {
+      layers.forEach(layer => {
+        layer.hidden = layer !== cached;
+        layer.classList.toggle('active', layer === cached);
+      });
+      stage.dataset.activeLayer = cached.id;
+      stage.classList.add('has-photo');
+      state.visualKey = visualKey;
+      return;
+    }
+
+    const requestId = ++state.visualRequestId;
+    if (!phone.visual || !phone.visual.asset) {
+      showMissingPhoneVisual(phone);
+      return;
+    }
+
+    try {
+      const response = await fetch(phone.visual.asset, { cache: 'force-cache' });
+      if (!response.ok) throw new Error(`visual resource status ${response.status}`);
+      let svg = await response.text();
+      if (!svg.includes('<svg') || !svg.includes('__BODY_COLOR__') || !/^#[0-9a-f]{6}$/i.test(color.hex)) throw new Error('invalid visual resource');
+      svg = svg.replaceAll('__BODY_COLOR__', color.hex);
+      const objectUrl = URL.createObjectURL(new Blob([svg], { type: 'image/svg+xml' }));
+      const preload = new Image();
+      preload.src = objectUrl;
+      await preload.decode();
+      if (requestId !== state.visualRequestId || state.productKey !== 'iphone' || state.phoneId !== phone.id || state.colorId !== color.id) {
+        URL.revokeObjectURL(objectUrl);
+        return;
+      }
+
+      const currentId = stage.dataset.activeLayer;
+      const outgoing = layers.find(layer => layer.id === currentId);
+      const incoming = outgoing === layers[0] ? layers[1] : layers[0];
+      if (incoming.dataset.objectUrl) URL.revokeObjectURL(incoming.dataset.objectUrl);
+      incoming.dataset.objectUrl = objectUrl;
+      incoming.dataset.visualKey = visualKey;
+      incoming.src = objectUrl;
+      incoming.alt = `${phone.name} · ${color.name}: авторская схематичная иллюстрация спереди, сзади и сбоку; не фотография`;
+      incoming.hidden = false;
+      incoming.classList.add('active');
+      if (outgoing) {
+        outgoing.classList.remove('active');
+        setTimeout(() => {
+          if (stage.dataset.activeLayer !== outgoing.id) outgoing.hidden = true;
+        }, 260);
+      }
+      stage.dataset.activeLayer = incoming.id;
+      stage.classList.add('has-photo');
+      stage.style.background = '#080a10';
+      mock.style.display = 'none';
+      state.visualKey = visualKey;
+    } catch (_) {
+      if (requestId !== state.visualRequestId || state.productKey !== 'iphone' || state.phoneId !== phone.id) return;
+      showMissingPhoneVisual(phone);
+    }
+  }
+
+  function showMissingPhoneVisual(phone) {
+    const stage = document.getElementById('deviceStage');
+    [document.getElementById('deviceImg'), document.getElementById('deviceImgNext')].forEach(layer => {
+      layer.hidden = true;
+      layer.classList.remove('active');
+    });
+    stage.classList.remove('has-photo');
+    stage.style.background = '';
+    stage.dataset.activeLayer = '';
+    document.getElementById('deviceMockup').style.display = '';
+    document.getElementById('deviceNameLabel').textContent = `${phone.name} · СХЕМА НЕ ЗАГРУЖЕНА`;
+    document.getElementById('phoneVisualNote').textContent = 'Ресурс иллюстрации не загружен · не фотография';
+    state.visualKey = '';
+  }
+
   // Перерисовывает витрину под выбранные товар и цвет
   function renderProduct() {
     if (state.productKey === 'iphone') {
       renderPhoneProduct();
       return;
     }
+    state.visualRequestId++;
+    document.getElementById('phoneVisualNote').hidden = true;
     const p = PRODUCTS[state.productKey];
     const c = p.colors[state.colorIdx];
     state.productName = p.name;
@@ -1162,6 +1245,17 @@
     const mock = document.getElementById('deviceMockup');
     const img = document.getElementById('deviceImg');
     const stage = document.getElementById('deviceStage');
+    const nextImg = document.getElementById('deviceImgNext');
+    [img, nextImg].forEach(layer => {
+      if (layer.dataset.objectUrl) URL.revokeObjectURL(layer.dataset.objectUrl);
+      delete layer.dataset.objectUrl;
+      delete layer.dataset.visualKey;
+      layer.classList.remove('phone-art-layer', 'active');
+      layer.hidden = true;
+      layer.removeAttribute('src');
+    });
+    stage.dataset.activeLayer = '';
+    state.visualKey = '';
     mock.className = 'device-mockup shape-' + p.shape;
     mock.style.background = paint(p.shape, c.hex);
     document.getElementById('deviceNameLabel').innerHTML = p.name + '<br>' + p.price.toLocaleString('ru-RU') + ' ₽';
@@ -1238,9 +1332,12 @@
       button.onclick = () => {
         configDraft.brand = id;
         const first = PHONE_CATALOG.find(item => item.brand === id);
+        const oldPhone = phoneById(configDraft.phoneId);
+        const colorId = oldPhone.colors.some(color => color.id === configDraft.colorId) && first.colors.some(color => color.id === configDraft.colorId)
+          ? configDraft.colorId : first.colors[0].id;
         configDraft.phoneId = first.id;
         configDraft.memory = first.capacities[0];
-        configDraft.colorId = first.colors[0].id;
+        configDraft.colorId = colorId;
         renderConfigSheet();
       };
       brandBox.appendChild(button);
@@ -1254,9 +1351,12 @@
       button.className = 'config-option' + (item.id === phone.id ? ' active' : '');
       button.textContent = item.name;
       button.onclick = () => {
+        const oldPhone = phoneById(configDraft.phoneId);
+        const colorId = oldPhone.colors.some(color => color.id === configDraft.colorId) && item.colors.some(color => color.id === configDraft.colorId)
+          ? configDraft.colorId : item.colors[0].id;
         configDraft.phoneId = item.id;
         configDraft.memory = item.capacities[0];
-        configDraft.colorId = item.colors[0].id;
+        configDraft.colorId = colorId;
         renderConfigSheet();
       };
       modelBox.appendChild(button);
